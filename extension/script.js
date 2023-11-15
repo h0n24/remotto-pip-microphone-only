@@ -9,20 +9,29 @@ function toggleMicrophone() {
   navigator.mediaSession.setMicrophoneActive(currentState);
 }
 
+function getRemottoMicrophoneState() {
+  // get state of the microphone in the remotto
+  const currentState = APP.conference.isLocalAudioMuted();
+
+  // set the initial state of the microphone
+  // has to be opposite due to the isLocalAudioMuted() function
+  navigator.mediaSession.setMicrophoneActive(!currentState);
+}
+
 function createPictureInPicture() {
   // Add a button to the picture-in-picture mode via MediaSession's setActionHandler() method
   if ("mediaSession" in navigator) {
-    const currentState = APP.conference.isLocalAudioMuted();
-
-    // set the initial state of the microphone
-    // has to be opposite due to the isLocalAudioMuted() function
-    navigator.mediaSession.setMicrophoneActive(!currentState);
-
-    console.log("navigator.mediaSession", navigator.mediaSession);
+    getRemottoMicrophoneState();
 
     navigator.mediaSession.setActionHandler("togglemicrophone", () => {
       toggleMicrophone();
     });
+
+    // interval prevents the bug where user clicks on mute inside remotto,
+    // but the PIP is still on -> now it propagates the state of the microphone
+    setInterval(() => {
+      getRemottoMicrophoneState();
+    }, 2000);
   }
 }
 

@@ -21,9 +21,10 @@ function getRemottoMicrophoneState() {
 function createPictureInPicture() {
   // check if the browser supports the Picture-in-Picture API
   if ("mediaSession" in navigator) {
+    // Add a button to the picture-in-picture mode via MediaSession's setMicrophoneActive method
     getRemottoMicrophoneState();
 
-    // Add a button to the picture-in-picture mode via MediaSession's setActionHandler() method
+    // Add an event to the Microphone button in picture-in-picture mode
     navigator.mediaSession.setActionHandler("togglemicrophone", () => {
       toggleMicrophone();
     });
